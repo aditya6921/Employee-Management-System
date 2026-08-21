@@ -1,61 +1,91 @@
 import java.util.Scanner;
 
 public class Main{
-    static int employeeid;
-    static String employeName;
-    static String Department;
-    static double salary;
+    static int[] employeeid = new int[10];
+    static String[] employeName = new String[10];
+    static String[] Department = new String[10];
+    static double[] salary = new double[10];
 
     static Scanner s = new Scanner(System.in);
+    static int count =0;
 
     public static void addEmployee(){
-        System.out.print("Enter Employee ID: ");
-        employeeid =s.nextInt();
+
+        System.out.println("how many employess you want to add");
+        int n = s.nextInt();
         s.nextLine();
-        System.out.print("Enter Employee Name: ");
-        employeName =s.nextLine();
 
-        System.out.print("Enter Department: ");
-        Department =s.nextLine();
-
-        System.out.print("Enter Salary: ");
-        salary = s.nextDouble();
-    }
-
-    public static void searchEmployee(){
-        System.out.println("Enter the Employee Id to Serach Employee : ");
-        int search = s.nextInt();
-        if(search == employeeid){
-            System.out.println("Employee Found ");
-            viewEmployee();
-        }else{
-            System.out.println("Employee Not Found");
+        if(count+n > 10){
+            System.out.println("only"+(10-count)+"places avialable");
         }
+        for (int i = 0; i < n; i++) {
+            System.out.print("Enter Employee ID: ");
+            employeeid[count] = s.nextInt();
+            s.nextLine();
+            System.out.print("Enter Employee Name: ");
+            employeName[count] = s.nextLine();
+
+            System.out.print("Enter Department: ");
+            Department[count] = s.nextLine();
+
+            System.out.print("Enter Salary: ");
+            salary[count] = s.nextDouble();
+            s.nextLine();
+            count ++;
+        }
+
+    }
+    public static void searchEmployee(){
+        System.out.println("Enter the Employee Id to Search Employee : ");
+        int search = s.nextInt();
+        for(int i = 0 ; i<count ; i++){
+            if(search == employeeid[i]){
+                System.out.println("Employee Found ");
+                System.out.println("Employee ID : " + employeeid[i]);
+                System.out.println("Employee Name : " + employeName[i]);
+                System.out.println("Employee Department : " + Department[i]);
+                System.out.println("Employee salary : " + salary[i]);
+
+            }
+        }
+
+
     }
 
     public static void deleteEmployee(){
         System.out.println("Enter the Employee Id which to be deleted : ");
         int delete = s.nextInt();
-        if(delete == employeeid){
-            employeeid = 0;
-            employeName = "";
-            Department = "";
-            salary = 0;
-            System.out.println("Employee deleted");
-        }else{
-            System.out.println("Employee Not Found");
+        s.nextLine();
+        for(int i = 0 ; i< count ; i++) {
+            if (delete == employeeid[i]) {
+                for(int j = i;j<count-1;j++) {
+
+                    employeeid[j] = employeeid[j + 1];
+                    employeName[j] = employeName[j + 1];
+                    Department[j] = Department[j + 1];
+                    salary[j] = salary[j + 1];
+                    System.out.println("Employee deleted");
+                    count--;
+                }
+            }
         }
+
     }
 
+
+
     public static void viewEmployee(){
-        System.out.println("Employee ID : "+employeeid);
-        System.out.println("Employee Name : "+employeName);
-        System.out.println("Employee Department : "+Department);
-        System.out.println("Employee salary : "+salary);
+        for(int i = 0; i < count ; i++) {
+            System.out.println("Employee ID : " + employeeid[i]);
+            System.out.println("Employee Name : " + employeName[i]);
+            System.out.println("Employee Department : " + Department[i]);
+            System.out.println("Employee salary : " + salary[i]);
+        }
     }
     public static void main(String[] args){
 
         System.out.println("Hello world");
+
         int num;
         do {
             System.out.println("=======Employee management and attendence system=======");
