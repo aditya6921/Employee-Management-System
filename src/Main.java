@@ -1,92 +1,17 @@
+import model.Employee;
+import service.EmployeManager;
+
 import java.util.Scanner;
 
 public class Main{
-    static int[] employeeid = new int[10];
-    static String[] employeName = new String[10];
-    static String[] Department = new String[10];
-    static double[] salary = new double[10];
-
-    static Scanner s = new Scanner(System.in);
-    static int count =0;
-
-    public static void addEmployee(){
-
-        System.out.println("how many employess you want to add");
-        int n = s.nextInt();
-        s.nextLine();
-
-        if(count+n > 10){
-            System.out.println("only"+(10-count)+"places avialable");
-        }
-        for (int i = 0; i < n; i++) {
-            System.out.print("Enter Employee ID: ");
-            employeeid[count] = s.nextInt();
-            s.nextLine();
-            System.out.print("Enter Employee Name: ");
-            employeName[count] = s.nextLine();
-
-            System.out.print("Enter Department: ");
-            Department[count] = s.nextLine();
-
-            System.out.print("Enter Salary: ");
-            salary[count] = s.nextDouble();
-            s.nextLine();
-            count ++;
-        }
-
-    }
-    public static void searchEmployee(){
-        System.out.println("Enter the Employee Id to Search Employee : ");
-        int search = s.nextInt();
-        for(int i = 0 ; i<count ; i++){
-            if(search == employeeid[i]){
-                System.out.println("Employee Found ");
-                System.out.println("Employee ID : " + employeeid[i]);
-                System.out.println("Employee Name : " + employeName[i]);
-                System.out.println("Employee Department : " + Department[i]);
-                System.out.println("Employee salary : " + salary[i]);
-
-            }
-        }
-
-
-    }
-
-    public static void deleteEmployee(){
-        System.out.println("Enter the Employee Id which to be deleted : ");
-        int delete = s.nextInt();
-        s.nextLine();
-        for(int i = 0 ; i< count ; i++) {
-            if (delete == employeeid[i]) {
-                for(int j = i;j<count-1;j++) {
-
-                    employeeid[j] = employeeid[j + 1];
-                    employeName[j] = employeName[j + 1];
-                    Department[j] = Department[j + 1];
-                    salary[j] = salary[j + 1];
-                    System.out.println("Employee deleted");
-                    count--;
-                }
-            }
-        }
-
-    }
-
-
-
-    public static void viewEmployee(){
-        for(int i = 0; i < count ; i++) {
-            System.out.println("Employee ID : " + employeeid[i]);
-            System.out.println("Employee Name : " + employeName[i]);
-            System.out.println("Employee Department : " + Department[i]);
-            System.out.println("Employee salary : " + salary[i]);
-        }
-    }
     public static void main(String[] args){
 
+        Scanner s = new Scanner(System.in);
         System.out.println("Hello world");
+        EmployeManager manager = new EmployeManager();
 
         int num;
+
         do {
             System.out.println("=======Employee management and attendence system=======");
             System.out.println(" 1. Add Employee\n 2. Search Employee\n 3. Delete Employee\n 4. View Employee\n 5. Exit\n==========================");
@@ -94,16 +19,55 @@ public class Main{
             num = s.nextInt();
             switch (num) {
                 case 1:
-                    addEmployee();
+
+                    System.out.println("how many employees you want to add: ");
+                    int n = s.nextInt();
+                    s.nextLine();
+
+                    for(int i = 0 ; i<n;i++) {
+
+                        //taking all the fields from the user.
+                        System.out.print("Enter EmployeeId :");
+                        int id = s.nextInt();
+                        s.nextLine();
+                        System.out.print("Enter Employe name :");
+                        String name = s.nextLine();
+                        System.out.print("Enter Employe department :");
+                        String department = s.nextLine();
+                        System.out.print("Enter Employe salary :");
+                        double salary = s.nextDouble();
+                        s.nextLine();
+
+                        //calling add employee().
+                        manager.addEmploye(id, name, department, salary);
+                    }
+                    System.out.println("only"+(100-manager.getCount())+"places avialable");
                     break;
                 case 2:
-                    searchEmployee();
+
+                    System.out.println("Enter the id of the employee to search");
+                    int id = s.nextInt();
+                    s.nextLine();
+
+                    //using oops funtionality , use object instead of printing all the values one by one.
+                    Employee found =manager.searchEmploye(id);
+                    if(found != null) {
+                        System.out.println("Employee found successfully");
+                        System.out.println(found);
+                    }else{
+                        System.out.println("employee not found");
+                    }
+
                     break;
+
                 case 3:
-                    deleteEmployee();
+                    System.out.println("Enter the id of the employee you want to delete");
+                    int delete = s.nextInt();
+                    manager.deleteEmployee(delete);
                     break;
                 case 4:
-                    viewEmployee();
+
+                    manager.viewEmployee();
                     break;
                 case 5:
                     break;
