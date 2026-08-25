@@ -1,8 +1,12 @@
 package ui;
 
+import exception.DuplicateEmployeeException;
+import exception.EmployeeNotFoundException;
 import model.Employee;
 import service.EmployeManager;
 
+import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class EmployeeMenu {
@@ -15,96 +19,170 @@ public class EmployeeMenu {
     }
 
     public void start() {
-        int num;
+        try {
+            manager.loadFromFile();
+            System.out.println("Employees loaded successfully.");
+        } catch (IOException e) {
+            System.out.println("No employee file found. Starting with empty list.");
+        }
+        int num =0;
 
         do {
             System.out.println("=======Employee management and attendence system=======");
-            System.out.println(" 1. Add Employee\n 2. Search Employee\n 3. Delete Employee\n 4. View Employee\n 5. Sorting\n 6. Exit\n==========================");
+            System.out.println(" 1. Add Employee\n 2. Search Employee\n 3. Delete Employee\n 4. View Employee\n 5. Sorting\n 6. Save to file\n 7. Exit\n==========================");
+            try {
+                num = s.nextInt();
+                switch (num) {
+                    case 1:
 
-            num = s.nextInt();
-            switch (num) {
-                case 1:
-
-                    System.out.println("how many employees you want to add: ");
-                    int n = s.nextInt();
-                    s.nextLine();
-
-                    for (int i = 0; i < n; i++) {
-
-                        //taking all the fields from the user.
-                        System.out.print("Enter EmployeeId :");
-                        int id = s.nextInt();
-                        s.nextLine();
-                        System.out.print("Enter Employe name :");
-                        String name = s.nextLine();
-                        System.out.print("Enter Employe department :");
-                        String department = s.nextLine();
-                        System.out.print("Enter Employe salary :");
-                        double salary = s.nextDouble();
+                        System.out.println("how many employees you want to add: ");
+                        int n = s.nextInt();
                         s.nextLine();
 
-                        //calling add employee().
-                        manager.addEmploye(id, name, department, salary);
-                    }
-                    break;
-                case 2:
+                        for (int i = 0; i < n; i++) {
+                            try {
+                                //taking all the fields from the user.
+                                System.out.print("Enter EmployeeId :");
+                                int id = s.nextInt();
+                                s.nextLine();
+                                System.out.print("Enter Employe name :");
+                                String name = s.nextLine();
+                                System.out.print("Enter Employe department :");
+                                String department = s.nextLine();
+                                System.out.print("Enter Employe salary :");
+                                double salary = s.nextDouble();
+                                s.nextLine();
 
-                    System.out.println("Enter the id of the employee to search");
-                    int id = s.nextInt();
-                    s.nextLine();
+                                //calling add employee().
+                                manager.addEmploye(id, name, department, salary);
+                                System.out.println("Employee added successfully");
+                            } catch (InputMismatchException e) {
 
-                    //using oops funtionality , use object instead of printing all the values one by one.
-                    Employee found = manager.searchEmploye(id);
-                    if (found != null) {
-                        System.out.println("Employee found successfully");
-                        System.out.println(found);
-                    } else {
-                        System.out.println("employee not found");
-                    }
+                                System.out.println(
+                                        "Invalid input! Please enter a valid number."
+                                );
 
-                    break;
+                                s.nextLine();
 
-                case 3:
-                    System.out.println("Enter the id of the employee you want to delete");
-                    int delete = s.nextInt();
-                    manager.deleteEmployee(delete);
-                    break;
-                case 4:
-                    manager.viewEmployee();
-                    break;
-                case 5:
-                    int a ;
-                    do {
-                        System.out.println("1. Sort by Name \n2. Sort by Salary \n3. Sort by Department \n4. Sort by Id \n5.Exit");
-                        System.out.println("Select by which you have to sort : ");
-                        a = s.nextInt();
-                        switch (a) {
-                            case 1:
-                                manager.sortbyName();
-                                break;
-                            case 2:
-                                manager.sortbySalary();
-                                break;
-                            case 3:
-                                manager.sortbyDepartment();
-                                break;
-                            case 4:
-                                manager.sortbyId();
-                                break;
-                            case 5 :
-                                break;
-                            default:
-                                System.out.println("plz enter valid choice :");
+                            } catch (DuplicateEmployeeException e) {
+
+                                System.out.println(e.getMessage());
+
+                            } catch (IllegalArgumentException e) {
+
+                                System.out.println(e.getMessage());
+                            }
                         }
-                    }while(a !=5);
+                        break;
 
-                    break;
-                case 6:
-                    break;
-                default:
-                    System.out.println("Please enter valid choice (Between 1-5");
+                    case 2:
+                        try {
+                            System.out.println("Enter the id of the employee to search");
+                            int id = s.nextInt();
+                            s.nextLine();
+
+                            //using oops funtionality , use object instead of printing all the values one by one.
+                            Employee found = manager.searchEmploye(id);
+                            if (found != null) {
+                                System.out.println("Employee found successfully");
+                                System.out.println(found);
+                            } else {
+                                System.out.println("employee not found");
+                            }
+
+                        } catch (InputMismatchException e) {
+
+                            System.out.println(
+                                    "Employee ID must be a number."
+                            );
+
+                            s.nextLine();
+                        }
+
+                        break;
+
+                    case 3:
+                        try {
+                            System.out.println("Enter the id of the employee you want to delete");
+                            int delete = s.nextInt();
+                            manager.deleteEmployee(delete);
+                        } catch (InputMismatchException e) {
+
+                            System.out.println(
+                                    "Employee ID must be a number."
+                            );
+
+                            s.nextLine();
+
+                        } catch (EmployeeNotFoundException e) {
+
+                            System.out.println(e.getMessage());
+                        }
+                        break;
+                    case 4:
+                        manager.viewEmployee();
+                        break;
+                    case 5:
+                        int a =0;
+                        do {
+                            System.out.println("1. Sort by Name \n2. Sort by Salary \n3. Sort by Department \n4. Sort by Id \n5.Exit");
+                            System.out.println("Select by which you have to sort : ");
+                            try {
+                                a = s.nextInt();
+                                s.nextLine();
+                                switch (a) {
+                                    case 1:
+                                        manager.sortbyName();
+                                        break;
+                                    case 2:
+                                        manager.sortbySalary();
+                                        break;
+                                    case 3:
+                                        manager.sortbyDepartment();
+                                        break;
+                                    case 4:
+                                        manager.sortbyId();
+                                        break;
+                                    case 5:
+                                        break;
+                                    default:
+                                        System.out.println("plz enter valid choice :");
+                                }
+                            } catch (InputMismatchException e) {
+
+                                System.out.println(
+                                        "Please enter a number."
+                                );
+
+                                s.nextLine();
+                            }
+                        } while (a != 5);
+
+                        break;
+                    case 6:
+                        try {
+                            manager.saveToFile();
+                            System.out.println("Employees saved successfully.");
+                        } catch (IOException e) {
+                            System.out.println("Unable to save employees.");
+                        }
+                        break;
+                    case 7:
+                        break;
+                    default:
+                        System.out.println("Please enter valid choice (Between 1-5");
+                }
+            } catch (InputMismatchException e) {
+
+                System.out.println(
+                        "Please enter a number for the menu choice."
+                );
+
+                // Very important
+                s.nextLine();
             }
-        } while (num != 6);
+
+        } while (num != 7);
     }
 
 }

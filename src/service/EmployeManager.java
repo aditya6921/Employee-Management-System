@@ -1,49 +1,87 @@
 package service;
 
 import model.Employee;
+import exception.EmployeeNotFoundException;
+import exception.DuplicateEmployeeException;
 
+import java.io.IOException;
 import java.util.*;
+import filereadandwrite.Fileutil;
 
 public class EmployeManager {
 
-    List<Employee> employe = new ArrayList<>();
-    Scanner s = new Scanner(System.in);
+    private List<Employee> employe = new ArrayList<>();
+    private Fileutil fileUtil = new Fileutil();
 
     //add
-    public void addEmploye(int employeeid,String employeName, String department,double salary){
+    public void addEmploye(int employeeid, String employeName,
+                           String department, double salary) {
 
-        employe.add(new Employee(employeeid,employeName,department,salary));
+        // validation
+        if (employeeid < 0) {
+            throw new IllegalArgumentException("Employee ID cannot be negative");
+        }
+
+        if (employeName == null || employeName.trim().isEmpty() || !employeName.matches("[a-zA-Z ]+")) {
+            throw new IllegalArgumentException("Employee name must contain only letters no space and numbers");
+        }
+
+        if (department == null || department.trim().isEmpty() || !department.matches("[a-zA-Z ]+")) {
+            throw new IllegalArgumentException("Employee name must contain only letters no space and numbers");
+        }
+
+        if (salary < 0) {
+            throw new IllegalArgumentException("Salary cannot be negative");
+        }
+
+        // Check duplicate ID
+        if (searchEmploye(employeeid) != null) {
+            throw new DuplicateEmployeeException(
+                    "Employee with ID " + employeeid + " already exists"
+            );
+        }
+
+        employe.add(new Employee(employeeid, employeName, department, salary));
     }
 
-    //search
-    public Employee searchEmploye(int employeeid){
-        for(int i=0; i<employe.size(); i++){
 
-            if(employe.get(i) != null && employe.get(i).getEmployeeid() == employeeid){
-                return employe.get(i);
+    //search
+    public Employee searchEmploye(int employeeid) {
+
+        for (Employee e : employe) {
+
+            if (e != null && e.getEmployeeid() == employeeid) {
+                return e;
             }
         }
+
         return null;
     }
 
+
     //view
-    public void viewEmployee(){
-        for(int i = 0;i<employe.size() ;i++){
-            Employee e = employe.get(i);
+    public void viewEmployee() {
+
+        for (Employee e : employe) {
             System.out.println(e);
         }
     }
 
+
     //delete
-    public void deleteEmployee(int delete){
-        for(int  i = 0 ; i<employe.size(); i++){
-            if(employe.get(i) != null && employe.get(i).getEmployeeid() == delete){
-                employe.remove(i);
-                System.out.println("Employee deleted successfully");
-                return;
-            }
+    public void deleteEmployee(int delete) {
+
+        Employee employee = searchEmploye(delete);
+
+        if (employee == null) {
+            throw new EmployeeNotFoundException(
+                    "Employee with ID " + delete + " not found"
+            );
         }
 
+        employe.remove(employee);
+
+        System.out.println("Employee deleted successfully");
     }
 
     //sorting
@@ -62,5 +100,16 @@ public class EmployeManager {
     public void sortbySalary(){
         employe.sort(Comparator.comparing(e -> e.getSalary()));
         employe.forEach(e -> System.out.println(e));
+    }
+
+
+    //savetofile
+    public void saveToFile() throws IOException {
+        fileUtil.saveToFile(employe);
+    }
+
+    //loading file
+    public void loadFromFile() throws IOException {
+        employe = fileUtil.loadFromFile();
     }
 }
