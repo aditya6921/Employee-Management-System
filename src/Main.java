@@ -1,3 +1,5 @@
+import database.DatabaseInitializer;
+import database.EmployeDAO;
 import model.Employee;
 import service.EmployeManager;
 import ui.EmployeeMenu;
@@ -9,8 +11,13 @@ public class Main{
 
         Scanner s = new Scanner(System.in);
         System.out.println("Hello world");
-        EmployeManager manager = new EmployeManager();
-        EmployeeMenu menu = new EmployeeMenu(manager);
+
+        //EmployeManager manager = new EmployeManager();
+        //EmployeeMenu menu = new EmployeeMenu(manager);
+
+        EmployeDAO dao = new EmployeDAO();
+        EmployeeMenu menu = new EmployeeMenu(dao);
+        DatabaseInitializer.initialize();
         menu.start();
     }
 }

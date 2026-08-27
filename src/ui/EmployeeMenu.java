@@ -1,5 +1,6 @@
 package ui;
 
+import database.EmployeDAO;
 import exception.DuplicateEmployeeException;
 import exception.EmployeeNotFoundException;
 import model.Employee;
@@ -10,21 +11,25 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class EmployeeMenu {
-    private Scanner s;
-    private EmployeManager manager;
-    public EmployeeMenu(EmployeManager manager){
-        this.manager = manager;
-        this.s = new Scanner(System.in);
 
+    private Scanner s;
+    //private EmployeManager manager;
+    private EmployeDAO dao;
+
+    public EmployeeMenu(EmployeDAO dao){
+        //this.manager = manager;
+        this.s = new Scanner(System.in);
+        this.dao = dao;
     }
 
     public void start() {
+        /*
         try {
             manager.loadFromFile();
             System.out.println("Employees loaded successfully.");
         } catch (IOException e) {
             System.out.println("No employee file found. Starting with empty list.");
-        }
+        }*/
         int num =0;
 
         do {
@@ -52,9 +57,9 @@ public class EmployeeMenu {
                                 System.out.print("Enter Employe salary :");
                                 double salary = s.nextDouble();
                                 s.nextLine();
-
+                                Employee e = new Employee(id, name, department, salary);
                                 //calling add employee().
-                                manager.addEmploye(id, name, department, salary);
+                                dao.addEmployee(e);
                                 System.out.println("Employee added successfully");
                             } catch (InputMismatchException e) {
 
@@ -82,7 +87,7 @@ public class EmployeeMenu {
                             s.nextLine();
 
                             //using oops funtionality , use object instead of printing all the values one by one.
-                            Employee found = manager.searchEmploye(id);
+                            Employee found = dao.searchEmployee(id);
                             if (found != null) {
                                 System.out.println("Employee found successfully");
                                 System.out.println(found);
@@ -105,7 +110,7 @@ public class EmployeeMenu {
                         try {
                             System.out.println("Enter the id of the employee you want to delete");
                             int delete = s.nextInt();
-                            manager.deleteEmployee(delete);
+                            dao.deleteEmployee(delete);
                         } catch (InputMismatchException e) {
 
                             System.out.println(
@@ -120,7 +125,7 @@ public class EmployeeMenu {
                         }
                         break;
                     case 4:
-                        manager.viewEmployee();
+                        dao.getAllEmployees();
                         break;
                     case 5:
                         int a =0;
@@ -132,16 +137,16 @@ public class EmployeeMenu {
                                 s.nextLine();
                                 switch (a) {
                                     case 1:
-                                        manager.sortbyName();
+                                        dao.sortByName();
                                         break;
                                     case 2:
-                                        manager.sortbySalary();
+                                        dao.sortBySalary();
                                         break;
                                     case 3:
-                                        manager.sortbyDepartment();
+                                        dao.sortByDepartment();
                                         break;
                                     case 4:
-                                        manager.sortbyId();
+                                        dao.sortById();
                                         break;
                                     case 5:
                                         break;
@@ -160,12 +165,16 @@ public class EmployeeMenu {
 
                         break;
                     case 6:
+                        System.out.println("Not in existing version");
+                        /*
                         try {
                             manager.saveToFile();
                             System.out.println("Employees saved successfully.");
                         } catch (IOException e) {
                             System.out.println("Unable to save employees.");
                         }
+
+                         */
                         break;
                     case 7:
                         break;
