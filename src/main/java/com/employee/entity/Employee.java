@@ -1,28 +1,40 @@
 package com.employee.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "employees")
 public class Employee {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int employeeid;
+
     private String employeName;
+
     private String department;
+
     private double salary;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private Owner owner;
+
+    // Required by JPA
     public Employee() {
     }
 
-    public Employee(int employeeid, String employeName, String department, double salary) {
+    // Constructor
+    public Employee(int employeeid, String employeName,
+                    String department, double salary, Owner owner) {
         this.employeeid = employeeid;
         this.employeName = employeName;
         this.department = department;
         this.salary = salary;
+        this.owner = owner;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getEmployeeid() {
         return employeeid;
     }
@@ -53,6 +65,14 @@ public class Employee {
 
     public void setSalary(double salary) {
         this.salary = salary;
+    }
+    @JsonIgnore
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 
     @Override
