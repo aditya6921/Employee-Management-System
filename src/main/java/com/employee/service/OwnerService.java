@@ -21,6 +21,15 @@ public class OwnerService {
 
     public Owner registerOwner(Owner owner) {
 
+        if (owner.getEmail() == null || owner.getEmail().isBlank()
+                || owner.getPassword() == null || owner.getPassword().length() < 8) {
+            throw new IllegalArgumentException("A valid email and password of at least 8 characters are required");
+        }
+
+        if (ownerRepository.findByEmail(owner.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("An account with this email already exists");
+        }
+
         owner.setPassword(
                 passwordEncoder.encode(owner.getPassword())
         );

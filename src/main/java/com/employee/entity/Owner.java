@@ -1,5 +1,6 @@
 package com.employee.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,7 @@ public class Owner {
         this.employees = employees;
     }
 
+    @JsonIgnore
     private String password;
     public String getPassword() {
         return password;

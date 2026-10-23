@@ -4,7 +4,7 @@ import com.employee.entity.Owner;
 import com.employee.service.OwnerService;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "https://employee-management-system-frontend-plum.vercel.app")
+@CrossOrigin(origins ={ "https://employee-management-system-frontend-plum.vercel.app", "http://localhost:5173"})
 @RestController
 @RequestMapping("/owners")
 public class OwnerController {
